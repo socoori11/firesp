@@ -1,0 +1,1226 @@
+========================================
+[1차] App.jsx - Header 컴포넌트 적용 전
+========================================
+
+import React from 'react'
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
+import Home from './pages/Home'
+import Products from './pages/Products'
+import Cart from './pages/Cart'
+import NotFound from './pages/NotFound'
+import './App.css'
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <header>
+        <h1>Fire Shopping</h1>
+        <nav>
+          <Link to="/">홈</Link>
+          <Link to="/products">상품</Link>
+          <Link to="/cart">장바구니</Link>
+        </nav>
+      </header>
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+    </BrowserRouter>
+  )
+}
+
+export default App
+
+
+========================================
+[컴포넌트] Header.jsx
+========================================
+
+import React from 'react'
+import { Link } from 'react-router-dom'
+import styles from './Header.module.scss'
+
+const Header = () => {
+  return (
+    <header className={styles.header}>
+      <div className={styles.inner}>
+        <Link to="/" className={styles.logo}>Fire Shopping</Link>
+
+        <form className={styles.search}>
+          <input type="search" placeholder="찾고 싶은 상품을 검색하세요" aria-label="상품 검색" />
+          <button type="submit">검색</button>
+        </form>
+
+        <nav className={styles.userMenu} aria-label="사용자 메뉴">
+          <Link to="/login">로그인</Link>
+          <Link to="/signup">회원가입</Link>
+          <Link to="/wishlist">찜</Link>
+          <Link to="/cart">장바구니</Link>
+        </nav>
+      </div>
+
+      <nav className={styles.mainMenu} aria-label="주요 메뉴">
+        <Link to="/products">전체 상품</Link>
+        <Link to="/products/category/keyboard">키보드</Link>
+        <Link to="/products/category/mouse">마우스</Link>
+        <Link to="/products/category/monitor">모니터</Link>
+        <Link to="/notice">공지사항</Link>
+      </nav>
+    </header>
+  )
+}
+
+export default Header
+
+
+========================================
+[사스] Header.module.scss
+========================================
+
+.header {
+  width: 100%;
+  border-bottom: 1px solid #e8e8e8;
+  background: #fff;
+}
+
+.inner {
+  max-width: 1200px;
+  min-height: 82px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.logo {
+  color: #ff5a36;
+  font-size: 25px;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.search {
+  max-width: 520px;
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  border: 2px solid #ff5a36;
+  border-radius: 8px;
+
+  input {
+    min-width: 0;
+    flex: 1;
+    padding: 12px 16px;
+    border: 0;
+    outline: 0;
+    font-size: 15px;
+  }
+
+  button {
+    padding: 0 20px;
+    border: 0;
+    color: #fff;
+    background: #ff5a36;
+    cursor: pointer;
+  }
+}
+
+.userMenu,
+.mainMenu {
+  display: flex;
+  align-items: center;
+
+  a {
+    color: #333;
+    text-decoration: none;
+  }
+}
+
+.userMenu {
+  gap: 18px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.mainMenu {
+  min-height: 48px;
+  justify-content: center;
+  gap: 48px;
+  border-top: 1px solid #f1f1f1;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .inner {
+    padding: 16px;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .search {
+    max-width: none;
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .userMenu {
+    margin-left: auto;
+  }
+
+  .mainMenu {
+    padding: 0 16px;
+    justify-content: flex-start;
+    gap: 24px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+
+========================================
+[2차] App.jsx - 로그인, 회원가입, 찜, 공지사항 연결
+========================================
+
+import React from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Header from './components/Header'
+import Footer from './components/Footer'
+import Home from './pages/Home'
+import Products from './pages/Products'
+import ProductDetail from './pages/ProductDetail'
+import Cart from './pages/Cart'
+import Login from './pages/Login'
+import SignUp from './pages/SignUp'
+import Wishlist from './pages/Wishlist'
+import Notice from './pages/Notice'
+import NotFound from './pages/NotFound'
+import './App.css'
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Header />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          {/* 수정: 카테고리 이름을 주소 파라미터로 받는 경로입니다. */}
+          <Route path="/products/category/:category" element={<Products />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/notice" element={<Notice />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+      <Footer />
+    </BrowserRouter>
+  )
+}
+
+export default App
+
+
+
+========================================
+[3차] Footer.jsx 
+========================================
+
+import React from 'react'
+import { Link } from 'react-router-dom'
+import styles from './Footer.module.scss'
+
+const Footer = () => {
+  return (
+    <footer className={styles.footer}>
+      <div className={styles.inner}>
+        <div className={styles.brand}>
+          <strong>Fire Shopping</strong>
+          <p>좋은 상품을 편리하게 만나는 온라인 쇼핑몰</p>
+        </div>
+
+        <nav className={styles.menu} aria-label="하단 메뉴">
+          <Link to="/products">전체 상품</Link>
+          <Link to="/notice">공지사항</Link>
+          <Link to="/login">로그인</Link>
+          <Link to="/signup">회원가입</Link>
+        </nav>
+
+        <address className={styles.info}>
+          <span>대표: 홍길동</span>
+          <span>사업자등록번호: 000-00-00000</span>
+          <span>고객센터: 02-0000-0000</span>
+          <span>이메일: help@fireshopping.com</span>
+        </address>
+
+        <p className={styles.copyright}>
+          © {new Date().getFullYear()} Fire Shopping. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  )
+}
+
+export default Footer
+
+
+========================================
+[3차] Footer.module.scss
+========================================
+.footer {
+  width: 100%;
+  margin-top: 80px;
+  color: #aaa;
+  background: #252525;
+  position: absolute;
+  bottom: 0;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px 32px;
+}
+
+.brand {
+  strong {
+    color: #fff;
+    font-size: 22px;
+  }
+
+  p {
+    margin: 10px 0 0;
+    font-size: 14px;
+  }
+}
+
+.menu {
+  display: flex;
+  gap: 24px;
+  margin: 30px 0;
+  padding: 18px 0;
+  border-top: 1px solid #3a3a3a;
+  border-bottom: 1px solid #3a3a3a;
+
+  a {
+    color: #ddd;
+    font-size: 14px;
+    text-decoration: none;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 13px;
+  font-style: normal;
+  line-height: 1.7;
+}
+
+.copyright {
+  margin: 24px 0 0;
+  color: #777;
+  font-size: 12px;
+}
+
+@media (max-width: 600px) {
+  .footer {
+    margin-top: 48px;
+  }
+
+  .inner {
+    padding: 36px 16px 24px;
+  }
+
+  .menu {
+    gap: 12px 20px;
+    flex-wrap: wrap;
+  }
+
+  .info {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+========================================
+[컴포넌트] MainBanner.jsx => Home.jsx
+========================================
+
+    <div className={styles.home}>
+      <MainBanner />
+    </div>
+
+
+홈은 위에처럼 간략히 수정
+
+
+import React, { useEffect, useState } from 'react'
+import styles from './MainBanner.module.scss'
+
+const MainBanner = () => {
+  // 수정: JSX에 있던 배너 데이터 대신 JSON 데이터를 저장합니다.
+  const [banners, setBanners] = useState([])
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  // 수정: banners.json에서 배너 데이터를 불러옵니다.
+  useEffect(() => {
+    const loadBanners = async () => {
+      const response = await fetch('/data/banners.json')
+      const bannerData = await response.json()
+      setBanners(bannerData)
+    }
+
+    loadBanners()
+  }, [])
+
+  // 4초마다 다음 배너로 이동하고, 마지막 배너 뒤에는 첫 배너로 돌아갑니다.
+  useEffect(() => {
+    if (banners.length === 0) {
+      return undefined
+    }
+
+    const slideTimer = setInterval(() => {
+      setCurrentIndex((previousIndex) => {
+        if (previousIndex === banners.length - 1) {
+          return 0
+        }
+
+        return previousIndex + 1
+      })
+    }, 4000)
+
+    return () => clearInterval(slideTimer)
+  }, [banners.length])
+
+  // 수정: JSON을 불러오기 전에는 안내 문구를 표시합니다.
+  if (banners.length === 0) {
+    return <section className={styles.banner}>배너를 불러오는 중입니다.</section>
+  }
+
+  const currentBanner = banners[currentIndex]
+
+  const showPrevious = () => {
+    if (currentIndex === 0) {
+      setCurrentIndex(banners.length - 1)
+    } else {
+      setCurrentIndex(currentIndex - 1)
+    }
+  }
+
+  const showNext = () => {
+    if (currentIndex === banners.length - 1) {
+      setCurrentIndex(0)
+    } else {
+      setCurrentIndex(currentIndex + 1)
+    }
+  }
+
+  return (
+    <section className={styles.banner} aria-label="메인 프로모션">
+      <img key={currentBanner.id} src={currentBanner.image} alt="" className={styles.image} />
+      <div className={styles.overlay} />
+
+      <div key={`content-${currentBanner.id}`} className={styles.content}>
+        <p className={styles.eyebrow}>{currentBanner.eyebrow}</p>
+        <h2>{currentBanner.title}</h2>
+        <p className={styles.description}>{currentBanner.description}</p>
+      </div>
+
+      <button type="button" className={`${styles.arrow} ${styles.previous}`} onClick={showPrevious} aria-label="이전 배너">
+        ‹
+      </button>
+      <button type="button" className={`${styles.arrow} ${styles.next}`} onClick={showNext} aria-label="다음 배너">
+        ›
+      </button>
+
+      <div className={styles.pagination}>
+        {banners.map((banner, index) => (
+          <button
+            key={banner.id}
+            type="button"
+            className={index === currentIndex ? styles.active : ''}
+            onClick={() => setCurrentIndex(index)}
+            aria-label={`${index + 1}번 배너 보기`}
+          />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export default MainBanner
+
+
+
+========================================
+[사스] MainBanner.scss
+========================================
+.banner {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  overflow: hidden;
+  color: #fff;
+  background: #222;
+}
+
+.image,
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  object-fit: cover;
+  // 배너가 바뀔 때 이미지가 부드럽게 나타납니다.
+  animation: imageFade 0.8s ease;
+}
+
+.overlay {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.08));
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px 90px 0;
+  // 문구가 왼쪽에서 오른쪽으로 자연스럽게 나타납니다.
+  animation: contentFade 0.8s ease;
+
+  h2 {
+    max-width: 600px;
+    margin: 12px 0 18px;
+    color: #fff;
+    font-size: clamp(34px, 5vw, 58px);
+    line-height: 1.18;
+  }
+}
+
+// 이미지 투명도를 조절하는 전환 애니메이션입니다.
+@keyframes imageFade {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// 배너 문구가 왼쪽에서 오른쪽으로 나타나도록 위치와 투명도를 조절합니다.
+@keyframes contentFade {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.eyebrow {
+  margin: 0;
+  color: #ff7a5c;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.description {
+  margin: 0;
+  font-size: 17px;
+}
+
+.arrow {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.25);
+  font-size: 32px;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.previous {
+  left: 24px;
+}
+
+.next {
+  right: 24px;
+}
+
+.pagination {
+  position: absolute;
+  z-index: 2;
+  bottom: 24px;
+  left: 50%;
+  display: flex;
+  gap: 9px;
+  transform: translateX(-50%);
+
+  button {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+  }
+
+  .active {
+    width: 28px;
+    border-radius: 5px;
+    background: #fff;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner {
+    height: 380px;
+  }
+
+  .content {
+    padding: 90px 60px 0;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .arrow {
+    width: 38px;
+    height: 38px;
+  }
+
+  .previous {
+    left: 10px;
+  }
+
+  .next {
+    right: 10px;
+  }
+}
+
+
+========================================
+[컴포넌트] categoryMenu.jsx
+========================================
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import styles from './CategoryMenu.module.scss'
+
+const CategoryMenu = () => {
+  // 수정: JSX에 있던 카테고리 데이터 대신 JSON 데이터를 저장합니다.
+  const [categories, setCategories] = useState([])
+
+  // 수정: categories.json에서 카테고리 데이터를 불러옵니다.
+  useEffect(() => {
+    const loadCategories = async () => {
+      const response = await fetch('/data/categories.json')
+      const categoryData = await response.json()
+      setCategories(categoryData)
+    }
+
+    loadCategories()
+  }, [])
+
+  return (
+    <section className={styles.categorySection}>
+      <div className={styles.titleArea}>
+        <p>SHOP BY CATEGORY</p>
+        <h2>카테고리별 상품</h2>
+      </div>
+
+      <div className={styles.categoryList}>
+        {/* 수정: JSON에서 불러온 카테고리를 반복해서 표시합니다. */}
+        {categories.map((category) => (
+          <Link key={category.id} to={category.path} className={styles.categoryItem}>
+            <div className={styles.imageBox}>
+              {category.image ? (
+                <img src={category.image} alt={category.name} />
+              ) : (
+                <span className={styles.allText}>ALL</span>
+              )}
+            </div>
+            <strong>{category.name}</strong>
+          </Link>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export default CategoryMenu
+
+
+
+
+
+========================================
+[사스] categoryMenu.module.scss
+========================================
+
+.categorySection {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.titleArea {
+  margin-bottom: 34px;
+  text-align: center;
+
+  p {
+    margin: 0 0 8px;
+    color: #ff5a36;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+  }
+
+  h2 {
+    margin: 0;
+    color: #222;
+    font-size: 30px;
+  }
+}
+
+.categoryList {
+  display: grid;
+  // 수정: 전체보기를 포함한 7개 카테고리가 한 줄에 표시됩니다.
+  grid-template-columns: repeat(7, 1fr);
+  gap: 20px;
+}
+
+// 수정: 전체보기 메뉴에 사용할 간단한 문자 디자인입니다.
+.allText {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: #ff5a36;
+  background: #fff3ef;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.categoryItem {
+  color: #333;
+  text-align: center;
+  text-decoration: none;
+
+  strong {
+    display: block;
+    margin-top: 14px;
+    font-size: 16px;
+  }
+
+  &:hover .imageBox {
+    border-color: #ff5a36;
+    transform: translateY(-6px);
+  }
+}
+
+.imageBox {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: #f5f5f5;
+  transition: 0.25s;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+@media (max-width: 900px) {
+  .categoryList {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .categorySection {
+    padding: 56px 16px;
+  }
+
+  .categoryList {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 16px;
+  }
+}
+
+
+========================================
+[컴포넌트] ProductCard
+========================================
+
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import styles from './ProductCard.module.scss'
+
+const ProductCard = ({ product }) => {
+  const [isLiked, setIsLiked] = useState(false)
+
+  const discountPrice = product.price - (product.price * product.discountRate) / 100
+
+  const changeWishlist = () => {
+    setIsLiked(!isLiked)
+  }
+
+  return (
+    <article className={styles.card}>
+      <div className={styles.imageArea}>
+        <Link to={`/products/${product.id}`}>
+          <img src={product.image} alt={product.name} />
+        </Link>
+
+        <button
+          type="button"
+          className={styles.wishlistButton}
+          onClick={changeWishlist}
+          aria-label={isLiked ? '찜 목록에서 삭제' : '찜 목록에 추가'}
+        >
+          {isLiked ? '♥' : '♡'}
+        </button>
+      </div>
+
+      <div className={styles.information}>
+        <p className={styles.category}>{product.category}</p>
+        <Link to={`/products/${product.id}`} className={styles.name}>
+          {product.name}
+        </Link>
+
+        <div className={styles.priceArea}>
+          {product.discountRate > 0 && (
+            <span className={styles.discount}>{product.discountRate}%</span>
+          )}
+          <strong>{discountPrice.toLocaleString()}원</strong>
+        </div>
+
+        {product.discountRate > 0 && (
+          <del>{product.price.toLocaleString()}원</del>
+        )}
+      </div>
+    </article>
+  )
+}
+
+export default ProductCard
+
+
+========================================
+[사스] ProductCard.module.scss
+========================================
+.card {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #ededed;
+  border-radius: 14px;
+  background: #fff;
+  transition: 0.25s;
+
+  &:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
+    transform: translateY(-4px);
+  }
+}
+
+.imageArea {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #f5f5f5;
+
+  > a {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.3s;
+  }
+
+  &:hover img {
+    transform: scale(1.04);
+  }
+}
+
+.wishlistButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  color: #ff5a36;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.information {
+  padding: 18px;
+}
+
+.category {
+  margin: 0 0 8px;
+  color: #999;
+  font-size: 13px;
+}
+
+.name {
+  display: block;
+  min-height: 44px;
+  color: #222;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.priceArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+
+  strong {
+    color: #222;
+    font-size: 19px;
+  }
+}
+
+.discount {
+  color: #ff5a36;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+del {
+  display: block;
+  margin-top: 4px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+
+========================================
+[컴포넌트] ProductList.jsx
+========================================
+import React from 'react'
+import ProductCard from './ProductCard'
+import styles from './ProductList.module.scss'
+
+const ProductList = ({ products = [] }) => {
+  if (products.length === 0) {
+    return <p className={styles.emptyMessage}>등록된 상품이 없습니다.</p>
+  }
+
+  return (
+    <div className={styles.productList}>
+      {products.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  )
+}
+
+export default ProductList
+
+
+========================================
+[사스] ProductList.module.scss
+========================================
+.productList {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.emptyMessage {
+  padding: 60px 20px;
+  color: #888;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .productList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .productList {
+    grid-template-columns: 1fr;
+  }
+}
+
+========================================
+[컴포넌트] Home.jsx 2차 수정
+========================================
+
+import React, { useEffect, useState } from 'react'
+import MainBanner from '../components/MainBanner'
+import CategoryMenu from '../components/CategoryMenu'
+import ProductList from '../components/ProductList'
+import styles from './Home.module.scss'
+
+const Home = () => {
+  // 수정: products.json에서 받은 추천 상품을 저장합니다.
+  const [recommendedProducts, setRecommendedProducts] = useState([])
+
+  // 수정: 전체 상품 중 isRecommended가 true인 상품만 선택합니다.
+  useEffect(() => {
+    const loadRecommendedProducts = async () => {
+      const response = await fetch('/data/products.json')
+      const productData = await response.json()
+      const recommended = productData.filter((product) => product.isRecommended)
+      setRecommendedProducts(recommended)
+    }
+
+    loadRecommendedProducts()
+  }, [])
+
+  return (
+    <div className={styles.home}>
+      <MainBanner />
+      <CategoryMenu />
+      <section className={styles.recommendSection}>
+        <h2>추천 상품</h2>
+        <ProductList products={recommendedProducts} />
+      </section>
+    </div>
+  )
+}
+
+export default Home
+
+
+========================================
+[컴포넌트] Products.jsx
+========================================
+
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import ProductList from '../components/ProductList'
+import styles from './Products.module.scss'
+
+const categoryNames = {
+  keyboard: '키보드',
+  mouse: '마우스',
+  monitor: '모니터',
+  laptop: '노트북',
+  speaker: '스피커',
+  accessory: '액세서리',
+}
+
+const Products = () => {
+  const { category } = useParams()
+
+  // 수정: JSX에 있던 상품 데이터 대신 JSON 데이터를 저장합니다.
+  const [products, setProducts] = useState([])
+
+  // 수정: products.json에서 전체 상품을 불러옵니다.
+  useEffect(() => {
+    const loadProducts = async () => {
+      const response = await fetch('/data/products.json')
+      const productData = await response.json()
+      setProducts(productData)
+    }
+
+    loadProducts()
+  }, [])
+
+  const selectedProducts = category
+    ? products.filter((product) => product.categoryValue === category)
+    : products
+
+  const pageTitle = category ? categoryNames[category] : '전체 상품'
+
+  return (
+    <section className={styles.productsPage}>
+      <div className={styles.titleArea}>
+        <p>PRODUCTS</p>
+        <h2>{pageTitle}</h2>
+        <span>총 {selectedProducts.length}개의 상품이 있습니다.</span>
+      </div>
+
+      {/* 수정: JSON에서 선택된 상품을 ProductList에 전달합니다. */}
+      <ProductList products={selectedProducts} />
+    </section>
+  )
+}
+
+export default Products
+
+
+========================================
+[컴포넌트] Header.jsx 3차 수정
+========================================
+import React from 'react'
+import { Link } from 'react-router-dom'
+import SearchBox from './SearchBox'
+import styles from './Header.module.scss'
+
+const Header = () => {
+  return (
+    <header className={styles.header}>
+      <div className={styles.inner}>
+        <Link to="/" className={styles.logo}>Fire Shopping</Link>
+
+        {/* 수정: 헤더는 검색 기능을 직접 처리하지 않고 SearchBox를 사용합니다. */}
+        <SearchBox />
+
+        <nav className={styles.userMenu} aria-label="사용자 메뉴">
+          <Link to="/login">로그인</Link>
+          <Link to="/signup">회원가입</Link>
+          <Link to="/wishlist">찜</Link>
+          <Link to="/cart">장바구니</Link>
+        </nav>
+      </div>
+
+      <nav className={styles.mainMenu} aria-label="주요 메뉴">
+        <Link to="/products">전체 상품</Link>
+        <Link to="/products/category/keyboard">키보드</Link>
+        <Link to="/products/category/mouse">마우스</Link>
+        <Link to="/products/category/monitor">모니터</Link>
+        <Link to="/notice">공지사항</Link>
+      </nav>
+    </header>
+  )
+}
+
+export default Header
+
+
+========================================
+[컴포넌트] SearchBox.jsx
+========================================
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import styles from './SearchBox.module.scss'
+
+const SearchBox = () => {
+  // 수정: 검색창에 입력한 내용을 저장합니다.
+  const [searchKeyword, setSearchKeyword] = useState('')
+  const navigate = useNavigate()
+
+  // 수정: 검색 버튼을 누르면 검색 결과 페이지로 이동합니다.
+  const searchProducts = (event) => {
+    event.preventDefault()
+
+    const keyword = searchKeyword.trim()
+
+    if (keyword === '') {
+      return
+    }
+
+    navigate(`/search/${encodeURIComponent(keyword)}`)
+    setSearchKeyword('')
+  }
+
+  return (
+    <form className={styles.searchBox} onSubmit={searchProducts}>
+      <input
+        type="search"
+        value={searchKeyword}
+        onChange={(event) => setSearchKeyword(event.target.value)}
+        placeholder="찾고 싶은 상품을 검색하세요"
+        aria-label="상품 검색"
+      />
+      <button type="submit">검색</button>
+    </form>
+  )
+}
+
+export default SearchBox
+
+
+========================================
+[컴포넌트] SearchResult.jsx
+========================================
+
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import ProductList from '../components/ProductList'
+import styles from './SearchResult.module.scss'
+
+const SearchResult = () => {
+  const { keyword } = useParams()
+
+  // 수정: SearchBox가 주소로 전달한 검색어의 결과를 저장합니다.
+  const [searchResults, setSearchResults] = useState([])
+
+  // 수정: 상품명 또는 카테고리에 검색어가 포함된 상품을 찾습니다.
+  useEffect(() => {
+    const searchProducts = async () => {
+      const response = await fetch('/data/products.json')
+      const productData = await response.json()
+      // 수정: 대소문자와 앞뒤 공백의 영향을 받지 않도록 검색어를 정리합니다.
+      const lowerKeyword = keyword.toLowerCase().trim()
+
+      const results = productData.filter((product) => {
+        const productName = product.name.toLowerCase()
+        const productCategory = product.category.toLowerCase()
+
+        return productName.includes(lowerKeyword) || productCategory.includes(lowerKeyword)
+      })
+
+      setSearchResults(results)
+    }
+
+    searchProducts()
+  }, [keyword])
+
+  return (
+    <section className={styles.searchPage}>
+      <div className={styles.titleArea}>
+        <p>SEARCH</p>
+        <h2>“{keyword}” 검색 결과</h2>
+        <span>총 {searchResults.length}개의 상품을 찾았습니다.</span>
+      </div>
+
+      <ProductList products={searchResults} />
+    </section>
+  )
+}
+
+export default SearchResult

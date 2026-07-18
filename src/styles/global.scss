@@ -1,0 +1,3 @@
+@use './reset';
+@use './variables' as *;
+body { color: $secondary; background: $background; font-family: Arial, sans-serif; }

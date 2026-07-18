@@ -1,0 +1,39 @@
+.productsPage {
+  max-width: 1200px;
+  min-height: 500px;
+  margin: 0 auto;
+  padding: 70px 24px 100px;
+}
+
+.titleArea {
+  margin-bottom: 40px;
+
+  p {
+    margin: 0 0 8px;
+    color: #ff5a36;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+  }
+
+  h2 {
+    margin: 0 0 12px;
+    color: #222;
+    font-size: 36px;
+  }
+
+  span {
+    color: #888;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 500px) {
+  .productsPage {
+    padding: 50px 16px 70px;
+  }
+
+  .titleArea h2 {
+    font-size: 30px;
+  }
+}

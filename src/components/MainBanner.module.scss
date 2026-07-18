@@ -1,0 +1,159 @@
+.banner {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  overflow: hidden;
+  color: #fff;
+  background: #222;
+}
+
+.image,
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  object-fit: cover;
+  // 배너가 바뀔 때 이미지가 부드럽게 나타납니다.
+  animation: imageFade 0.8s ease;
+}
+
+.overlay {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.08));
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px 90px 0;
+  // 문구가 왼쪽에서 오른쪽으로 자연스럽게 나타납니다.
+  animation: contentFade 0.8s ease;
+
+  h2 {
+    max-width: 800px;
+    margin: 12px 0 18px;
+    color: #fff;
+    font-size: clamp(34px, 5vw, 58px);
+    line-height: 1.18;
+  }
+}
+
+// 이미지 투명도를 조절하는 전환 애니메이션입니다.
+@keyframes imageFade {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// 배너 문구가 왼쪽에서 오른쪽으로 나타나도록 위치와 투명도를 조절합니다.
+@keyframes contentFade {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.eyebrow {
+  margin: 0;
+  color: #ff7a5c;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.description {
+  margin: 0;
+  font-size: 17px;
+}
+
+.arrow {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.25);
+  font-size: 32px;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.previous {
+  left: 24px;
+}
+
+.next {
+  right: 24px;
+}
+
+.pagination {
+  position: absolute;
+  z-index: 2;
+  bottom: 24px;
+  left: 50%;
+  display: flex;
+  gap: 9px;
+  transform: translateX(-50%);
+
+  button {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+  }
+
+  .active {
+    width: 28px;
+    border-radius: 5px;
+    background: #fff;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner {
+    height: 380px;
+  }
+
+  .content {
+    padding: 90px 60px 0;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .arrow {
+    width: 38px;
+    height: 38px;
+  }
+
+  .previous {
+    left: 10px;
+  }
+
+  .next {
+    right: 10px;
+  }
+}

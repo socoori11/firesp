@@ -1,0 +1,23 @@
+.productList {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.emptyMessage {
+  padding: 60px 20px;
+  color: #888;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .productList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .productList {
+    grid-template-columns: 1fr;
+  }
+}
