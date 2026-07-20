@@ -1,1 +1,80 @@
-.root { display: block; }
+// 수정: 카테고리와 가격 필터를 한 영역에 배치합니다.
+.filterArea {
+  display: flex;
+  margin-bottom: 34px;
+  padding: 22px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border: 1px solid #e9e9e9;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.categoryFilter,
+.priceFilter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  strong {
+    color: #333;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+}
+
+.categoryList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  a {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    color: #666;
+    background: #fff;
+    font-size: 13px;
+    text-decoration: none;
+  }
+
+  .active {
+    border-color: #ff5a36;
+    color: #fff;
+    background: #ff5a36;
+  }
+}
+
+.priceFilter select {
+  min-width: 190px;
+  padding: 10px 34px 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  color: #444;
+  background: #fff;
+}
+
+@media (max-width: 850px) {
+  .filterArea,
+  .categoryFilter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 500px) {
+  .filterArea {
+    padding: 16px;
+  }
+
+  .priceFilter {
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
+
+    select {
+      width: 100%;
+    }
+  }
+}

@@ -1,1 +1,34 @@
-.root { display: block; }
+// 수정: 상품 상세 페이지에서 사용하는 수량 선택 디자인입니다.
+.quantityControl {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+
+  button,
+  span {
+    display: flex;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  button {
+    border: 0;
+    background: #f7f7f7;
+    font-size: 20px;
+    cursor: pointer;
+
+    &:disabled {
+      color: #bbb;
+      cursor: not-allowed;
+    }
+  }
+
+  span {
+    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    font-weight: 700;
+  }
+}

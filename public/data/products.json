@@ -6,7 +6,9 @@
     "categoryValue": "keyboard",
     "price": 129000,
     "discountRate": 15,
-    "image": "/img/category/keyboard.jpg"
+    "image": "/img/products/product01.jpg",
+    "stock": 18,
+    "description": "정확한 키 입력과 부드러운 타건감을 제공하는 기계식 키보드입니다."
   },
   {
     "id": 2,
@@ -15,7 +17,9 @@
     "categoryValue": "keyboard",
     "price": 89000,
     "discountRate": 12,
-    "image": "/img/category/keyboard.jpg"
+    "image": "/img/products/product02.jpg",
+    "stock": 24,
+    "description": "공간을 적게 차지해 작은 책상에서도 편리하게 사용할 수 있는 미니 키보드입니다."
   },
   {
     "id": 3,
@@ -24,7 +28,9 @@
     "categoryValue": "mouse",
     "price": 69000,
     "discountRate": 10,
-    "image": "/img/category/mouse.jpg"
+    "image": "/img/products/product03.jpg",
+    "stock": 32,
+    "description": "편안한 그립감과 안정적인 무선 연결을 제공하는 마우스입니다."
   },
   {
     "id": 4,
@@ -33,7 +39,9 @@
     "categoryValue": "mouse",
     "price": 99000,
     "discountRate": 5,
-    "image": "/img/category/mouse.jpg"
+    "image": "/img/products/product04.jpg",
+    "stock": 15,
+    "description": "빠른 반응 속도와 정밀한 움직임을 지원하는 게이밍 마우스입니다."
   },
   {
     "id": 5,
@@ -42,7 +50,9 @@
     "categoryValue": "monitor",
     "price": 399000,
     "discountRate": 20,
-    "image": "/img/category/monitor.jpg"
+    "image": "/img/products/product05.jpg",
+    "stock": 9,
+    "description": "넓은 작업 공간과 선명한 화면을 제공하는 와이드 모니터입니다."
   },
   {
     "id": 6,
@@ -51,7 +61,9 @@
     "categoryValue": "laptop",
     "price": 1290000,
     "discountRate": 8,
-    "image": "/img/category/laptop.jpg"
+    "image": "/img/products/product06.jpg",
+    "stock": 7,
+    "description": "가볍고 얇아 어디서나 편리하게 사용할 수 있는 고성능 노트북입니다."
   },
   {
     "id": 7,
@@ -60,7 +72,9 @@
     "categoryValue": "speaker",
     "price": 159000,
     "discountRate": 15,
-    "image": "/img/category/speaker.jpg"
+    "image": "/img/products/product07.jpg",
+    "stock": 20,
+    "description": "작은 크기에서도 풍부하고 균형 잡힌 소리를 들려주는 데스크 스피커입니다."
   },
   {
     "id": 8,
@@ -69,6 +83,8 @@
     "categoryValue": "accessory",
     "price": 79000,
     "discountRate": 0,
-    "image": "/img/category/accessory.jpg"
+    "image": "/img/products/product08.jpg",
+    "stock": 28,
+    "description": "깔끔한 작업 공간을 만드는 데 필요한 실용적인 데스크 액세서리 세트입니다."
   }
 ]

@@ -1034,62 +1034,6 @@ const Home = () => {
 export default Home
 
 
-========================================
-[컴포넌트] Products.jsx
-========================================
-
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import ProductList from '../components/ProductList'
-import styles from './Products.module.scss'
-
-const categoryNames = {
-  keyboard: '키보드',
-  mouse: '마우스',
-  monitor: '모니터',
-  laptop: '노트북',
-  speaker: '스피커',
-  accessory: '액세서리',
-}
-
-const Products = () => {
-  const { category } = useParams()
-
-  // 수정: JSX에 있던 상품 데이터 대신 JSON 데이터를 저장합니다.
-  const [products, setProducts] = useState([])
-
-  // 수정: products.json에서 전체 상품을 불러옵니다.
-  useEffect(() => {
-    const loadProducts = async () => {
-      const response = await fetch('/data/products.json')
-      const productData = await response.json()
-      setProducts(productData)
-    }
-
-    loadProducts()
-  }, [])
-
-  const selectedProducts = category
-    ? products.filter((product) => product.categoryValue === category)
-    : products
-
-  const pageTitle = category ? categoryNames[category] : '전체 상품'
-
-  return (
-    <section className={styles.productsPage}>
-      <div className={styles.titleArea}>
-        <p>PRODUCTS</p>
-        <h2>{pageTitle}</h2>
-        <span>총 {selectedProducts.length}개의 상품이 있습니다.</span>
-      </div>
-
-      {/* 수정: JSON에서 선택된 상품을 ProductList에 전달합니다. */}
-      <ProductList products={selectedProducts} />
-    </section>
-  )
-}
-
-export default Products
 
 
 ========================================
@@ -1224,3 +1168,464 @@ const SearchResult = () => {
 }
 
 export default SearchResult
+
+========================================
+[컴포넌트] Products.jsx -> 1차
+========================================
+import React, { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import QuantityControl from '../components/QuantityControl'
+import styles from './ProductDetail.module.scss'
+
+const ProductDetail = () => {
+  const { id } = useParams()
+
+  // 수정: JSON에서 찾은 상품과 사용자가 선택한 수량을 저장합니다.
+  const [product, setProduct] = useState(null)
+  const [quantity, setQuantity] = useState(1)
+  const [isLiked, setIsLiked] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // 수정: 주소의 id와 같은 상품을 products.json에서 찾습니다.
+  useEffect(() => {
+    const loadProduct = async () => {
+      const response = await fetch('/data/products.json')
+      const productData = await response.json()
+      const selectedProduct = productData.find((item) => String(item.id) === id)
+
+      setProduct(selectedProduct || null)
+      setIsLoading(false)
+    }
+
+    loadProduct()
+  }, [id])
+
+  if (isLoading) {
+    return <p className={styles.message}>상품을 불러오는 중입니다.</p>
+  }
+
+  if (!product) {
+    return (
+      <div className={styles.message}>
+        <p>상품을 찾을 수 없습니다.</p>
+        <Link to="/products">상품 목록으로 이동</Link>
+      </div>
+    )
+  }
+
+  const discountPrice = product.price - (product.price * product.discountRate) / 100
+  const totalPrice = discountPrice * quantity
+
+  // 수정: Zustand 연결 전에는 장바구니 동작을 안내창으로 확인합니다.
+  const addToCart = () => {
+    window.alert(`${product.name} ${quantity}개를 장바구니에 담았습니다.`)
+  }
+
+  return (
+    <section className={styles.detailPage}>
+      <Link to="/products" className={styles.backLink}>← 상품 목록</Link>
+
+      <div className={styles.productArea}>
+        <div className={styles.imageArea}>
+          <img src={product.image} alt={product.name} />
+        </div>
+
+        <div className={styles.information}>
+          <p className={styles.category}>{product.category}</p>
+          <h2>{product.name}</h2>
+          <p className={styles.description}>{product.description}</p>
+
+          <div className={styles.priceArea}>
+            {product.discountRate > 0 && (
+              <>
+                <span className={styles.discount}>{product.discountRate}%</span>
+                <del>{product.price.toLocaleString()}원</del>
+              </>
+            )}
+            <strong>{discountPrice.toLocaleString()}원</strong>
+          </div>
+
+          <div className={styles.deliveryInfo}>
+            <span>배송비</span>
+            <strong>50,000원 이상 무료배송</strong>
+          </div>
+
+          <div className={styles.quantityArea}>
+            <span>수량</span>
+            <QuantityControl
+              quantity={quantity}
+              setQuantity={setQuantity}
+              maxQuantity={product.stock}
+            />
+            <small>재고 {product.stock}개</small>
+          </div>
+
+          <div className={styles.totalArea}>
+            <span>총 상품 금액</span>
+            <strong>{totalPrice.toLocaleString()}원</strong>
+          </div>
+
+          <div className={styles.buttonArea}>
+            <button type="button" className={styles.likeButton} onClick={() => setIsLiked(!isLiked)}>
+              {isLiked ? '♥ 찜 완료' : '♡ 찜하기'}
+            </button>
+            <button type="button" className={styles.cartButton} onClick={addToCart}>장바구니 담기</button>
+            <button type="button" className={styles.buyButton}>바로 구매</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default ProductDetail
+
+
+
+========================================
+[컴포넌트] QuantityControl.jsx
+========================================
+import React from 'react'
+import styles from './QuantityControl.module.scss'
+
+const QuantityControl = ({ quantity, setQuantity, maxQuantity }) => {
+  // 수정: 수량 감소 기능을 QuantityControl 안에서 처리합니다.
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1)
+    }
+  }
+
+  // 수정: 재고보다 많아지지 않도록 수량 증가를 처리합니다.
+  const increaseQuantity = () => {
+    if (quantity < maxQuantity) {
+      setQuantity(quantity + 1)
+    }
+  }
+
+  return (
+    <div className={styles.quantityControl}>
+      {/* 수정: 수량이 1이면 감소 버튼을 사용할 수 없습니다. */}
+      <button type="button" onClick={decreaseQuantity} disabled={quantity === 1} aria-label="수량 감소">
+        −
+      </button>
+      <span>{quantity}</span>
+      <button type="button" onClick={increaseQuantity} disabled={quantity === maxQuantity} aria-label="수량 증가">
+        +
+      </button>
+    </div>
+  )
+}
+
+export default QuantityControl
+
+
+========================================
+[컴포넌트] Products.jsx -> 2차
+========================================
+
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import ProductFilter from '../components/ProductFilter'
+import ProductList from '../components/ProductList'
+import styles from './Products.module.scss'
+
+const categoryNames = {
+  keyboard: '키보드',
+  mouse: '마우스',
+  monitor: '모니터',
+  laptop: '노트북',
+  speaker: '스피커',
+  accessory: '액세서리',
+}
+
+const Products = () => {
+  const { category } = useParams()
+
+  // 수정: JSX에 있던 상품 데이터 대신 JSON 데이터를 저장합니다.
+  const [products, setProducts] = useState([])
+  // 수정: 사용자가 선택한 가격대 값을 저장합니다.
+  const [priceRange, setPriceRange] = useState('all')
+
+  // 수정: products.json에서 전체 상품을 불러옵니다.
+  useEffect(() => {
+    const loadProducts = async () => {
+      const response = await fetch('/data/products.json')
+      const productData = await response.json()
+      setProducts(productData)
+    }
+
+    loadProducts()
+  }, [])
+
+  const categoryProducts = category
+    ? products.filter((product) => product.categoryValue === category)
+    : products
+
+  // 수정: 할인된 실제 판매 가격을 기준으로 상품을 필터링합니다.
+  const selectedProducts = categoryProducts.filter((product) => {
+    const discountPrice = product.price - (product.price * product.discountRate) / 100
+
+    if (priceRange === 'under100000') {
+      return discountPrice < 100000
+    }
+
+    if (priceRange === '100000to300000') {
+      return discountPrice >= 100000 && discountPrice < 300000
+    }
+
+    if (priceRange === 'over300000') {
+      return discountPrice >= 300000
+    }
+
+    return true
+  })
+
+  const pageTitle = category ? categoryNames[category] : '전체 상품'
+
+  return (
+    <section className={styles.productsPage}>
+      <div className={styles.titleArea}>
+        <p>PRODUCTS</p>
+        <h2>{pageTitle}</h2>
+        <span>총 {selectedProducts.length}개의 상품이 있습니다.</span>
+      </div>
+
+      {/* 수정: 상품 목록 위에 카테고리와 가격 필터를 연결합니다. */}
+      <ProductFilter
+        selectedCategory={category || ''}
+        priceRange={priceRange}
+        setPriceRange={setPriceRange}
+      />
+
+      {/* 수정: JSON에서 선택된 상품을 ProductList에 전달합니다. */}
+      <ProductList products={selectedProducts} />
+    </section>
+  )
+}
+
+export default Products
+
+
+
+
+
+========================================
+[컴포넌트] ProductFilter.jsx 
+========================================
+
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import styles from './ProductFilter.module.scss'
+
+const ProductFilter = ({ selectedCategory, priceRange, setPriceRange }) => {
+  // 수정: categories.json에서 받은 카테고리를 저장합니다.
+  const [categories, setCategories] = useState([])
+
+  // 수정: 하드코딩된 배열 대신 categories.json을 불러옵니다.
+  useEffect(() => {
+    const loadCategories = async () => {
+      const response = await fetch('/data/categories.json')
+      const categoryData = await response.json()
+      setCategories(categoryData)
+    }
+
+    loadCategories()
+  }, [])
+
+  // 수정: 현재 주소의 카테고리와 같은 메뉴에 활성 스타일을 적용합니다.
+  const getCategoryClass = (categoryPath) => {
+    if (categoryPath === '/products' && selectedCategory === '') {
+      return styles.active
+    }
+
+    if (selectedCategory !== '' && categoryPath.endsWith(selectedCategory)) {
+      return styles.active
+    }
+
+    return ''
+  }
+
+  return (
+    <div className={styles.filterArea}>
+      <div className={styles.categoryFilter}>
+        <strong>카테고리</strong>
+
+        <div className={styles.categoryList}>
+          {/* 수정: 카테고리를 선택하면 해당 주소로 이동합니다. */}
+          {categories.map((category) => (
+            <Link
+              key={category.id}
+              to={category.path}
+              className={getCategoryClass(category.path)}
+            >
+              {category.name === '전체보기' ? '전체' : category.name}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <label className={styles.priceFilter}>
+        <strong>가격대</strong>
+        {/* 수정: 선택한 가격대를 Products 컴포넌트에 전달합니다. */}
+        <select value={priceRange} onChange={(event) => setPriceRange(event.target.value)}>
+          <option value="all">전체 가격</option>
+          <option value="under100000">10만원 미만</option>
+          <option value="100000to300000">10만원 이상 ~ 30만원 미만</option>
+          <option value="over300000">30만원 이상</option>
+        </select>
+      </label>
+    </div>
+  )
+}
+
+export default ProductFilter
+
+
+========================================
+[컴포넌트] Products.jsx -> 3차
+========================================
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import ProductFilter from '../components/ProductFilter'
+import ProductList from '../components/ProductList'
+import ProductSort from '../components/ProductSort'
+import styles from './Products.module.scss'
+
+const categoryNames = {
+  keyboard: '키보드',
+  mouse: '마우스',
+  monitor: '모니터',
+  laptop: '노트북',
+  speaker: '스피커',
+  accessory: '액세서리',
+}
+
+const Products = () => {
+  const { category } = useParams()
+
+  // 수정: JSX에 있던 상품 데이터 대신 JSON 데이터를 저장합니다.
+  const [products, setProducts] = useState([])
+  // 수정: 사용자가 선택한 가격대 값을 저장합니다.
+  const [priceRange, setPriceRange] = useState('all')
+  // 수정: 사용자가 선택한 상품 정렬 방식을 저장합니다.
+  const [sortType, setSortType] = useState('latest')
+
+  // 수정: products.json에서 전체 상품을 불러옵니다.
+  useEffect(() => {
+    const loadProducts = async () => {
+      const response = await fetch('/data/products.json')
+      const productData = await response.json()
+      setProducts(productData)
+    }
+
+    loadProducts()
+  }, [])
+
+  const categoryProducts = category
+    ? products.filter((product) => product.categoryValue === category)
+    : products
+
+  // 수정: 할인된 실제 판매 가격을 기준으로 상품을 필터링합니다.
+  const selectedProducts = categoryProducts.filter((product) => {
+    const discountPrice = product.price - (product.price * product.discountRate) / 100
+
+    if (priceRange === 'under100000') {
+      return discountPrice < 100000
+    }
+
+    if (priceRange === '100000to300000') {
+      return discountPrice >= 100000 && discountPrice < 300000
+    }
+
+    if (priceRange === 'over300000') {
+      return discountPrice >= 300000
+    }
+
+    return true
+  })
+
+  // 수정: 필터링된 배열을 복사한 후 선택한 기준으로 정렬합니다.
+  /*  
+    const numbers = [30, 10, 50, 20, 40]
+    numbers.sort((a, b) => a - b) 10, 20,30,40,50
+  const products = [
+    { id: 1, name: '키보드', price: 89000 },
+    { id: 2, name: '마우스', price: 39000 },
+    { id: 3, name: '모니터', price: 249000 }
+  ]
+
+  products.sort((a, b) => a.price - b.price)
+
+  */
+   const sortedProducts = [...selectedProducts].sort((firstProduct, secondProduct) => {
+    const firstPrice = firstProduct.price - (firstProduct.price * firstProduct.discountRate) / 100
+    const secondPrice = secondProduct.price - (secondProduct.price * secondProduct.discountRate) / 100
+
+    if (sortType === 'priceLow') {
+      return firstPrice - secondPrice
+    }
+
+    if (sortType === 'priceHigh') {
+      return secondPrice - firstPrice
+    }
+
+    return secondProduct.id - firstProduct.id
+  })
+
+  const pageTitle = category ? categoryNames[category] : '전체 상품'
+
+  return (
+    <section className={styles.productsPage}>
+      <div className={styles.titleArea}>
+        <p>PRODUCTS</p>
+        <h2>{pageTitle}</h2>
+        <span>총 {selectedProducts.length}개의 상품이 있습니다.</span>
+      </div>
+
+      {/* 수정: 상품 목록 위에 카테고리와 가격 필터를 연결합니다. */}
+      <ProductFilter
+        selectedCategory={category || ''}
+        priceRange={priceRange}
+        setPriceRange={setPriceRange}
+      />
+
+      {/* 수정: 상품 목록 위에 정렬 선택 메뉴를 연결합니다. */}
+      <ProductSort sortType={sortType} setSortType={setSortType} />
+
+      {/* 수정: 필터링하고 정렬한 상품을 ProductList에 전달합니다. */}
+      <ProductList products={sortedProducts} />
+    </section>
+  )
+}
+
+export default Products
+
+
+========================================
+[컴포넌트] ProductSort.jsx 
+========================================
+
+import React from 'react'
+import styles from './ProductSort.module.scss'
+
+const ProductSort = ({ sortType, setSortType }) => {
+  return (
+    <div className={styles.sortArea}>
+      <label htmlFor="product-sort">정렬</label>
+
+      {/* 수정: 선택한 정렬 값을 Products 컴포넌트에 전달합니다. */}
+      <select
+        id="product-sort"
+        value={sortType}
+        onChange={(event) => setSortType(event.target.value)}
+      >
+        <option value="latest">최신순</option>
+        <option value="priceLow">낮은 가격순</option>
+        <option value="priceHigh">높은 가격순</option>
+      </select>
+    </div>
+  )
+}
+
+export default ProductSort

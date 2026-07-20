@@ -1,1 +1,22 @@
-.root { display: block; }
+// 수정: 정렬 메뉴를 상품 목록 오른쪽에 배치합니다.
+.sortArea {
+  display: flex;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+
+  label {
+    color: #666;
+    font-size: 14px;
+  }
+
+  select {
+    min-width: 140px;
+    padding: 10px 32px 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    color: #444;
+    background: #fff;
+  }
+}
