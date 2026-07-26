@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import QuantityControl from '../components/QuantityControl'
+// 수정 후: 장바구니를 localStorage에 저장하기 위해 추가했습니다.
+import { loadLocal, saveLocal } from '../utils/localStorage'
 import styles from './ProductDetail.module.scss'
 
 const ProductDetail = () => {
@@ -42,8 +44,32 @@ const ProductDetail = () => {
   const discountPrice = product.price - (product.price * product.discountRate) / 100
   const totalPrice = discountPrice * quantity
 
-  // 수정: Zustand 연결 전에는 장바구니 동작을 안내창으로 확인합니다.
+  // 수정 전: 안내창만 표시하고 실제 장바구니에는 저장하지 않았습니다.
+  // const addToCart = () => {
+  //   window.alert(`${product.name} ${quantity}개를 장바구니에 담았습니다.`)
+  // }
+
+  // 수정 후: Zustand 연결 전까지 localStorage에 장바구니 상품을 저장합니다.
   const addToCart = () => {
+    const cartItems = loadLocal('cart', [])
+    const existingItem = cartItems.find((item) => item.id === product.id)
+
+    let changedCart
+
+    if (existingItem) {
+      changedCart = cartItems.map((item) => {
+        if (item.id === product.id) {
+          const newQuantity = Math.min(item.quantity + quantity, product.stock)
+          return { ...item, quantity: newQuantity }
+        }
+
+        return item
+      })
+    } else {
+      changedCart = [...cartItems, { ...product, quantity }]
+    }
+
+    saveLocal('cart', changedCart)
     window.alert(`${product.name} ${quantity}개를 장바구니에 담았습니다.`)
   }
 

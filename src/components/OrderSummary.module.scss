@@ -1,1 +1,61 @@
-.root { display: block; }
+// 수정: 장바구니 오른쪽의 결제 금액 영역입니다.
+.summary {
+  position: sticky;
+  top: 20px;
+  padding: 28px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  background: #fff;
+
+  h3 {
+    margin: 0 0 25px;
+    color: #222;
+    font-size: 21px;
+  }
+
+  > button {
+    width: 100%;
+    min-height: 52px;
+    margin-top: 24px;
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    background: #ff5a36;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.priceRow,
+.totalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.priceRow {
+  margin-bottom: 16px;
+  color: #666;
+  font-size: 14px;
+}
+
+.totalRow {
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid #ddd;
+
+  span {
+    font-weight: 700;
+  }
+
+  strong {
+    color: #ff5a36;
+    font-size: 23px;
+  }
+}
