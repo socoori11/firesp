@@ -55,7 +55,7 @@ const ProductDetail = () => {
     const existingItem = cartItems.find((item) => item.id === product.id)
 
     let changedCart
-
+  // 내가 가진 상품이 있으면 수량 추가 그 상품에 수량 추가
     if (existingItem) {
       changedCart = cartItems.map((item) => {
         if (item.id === product.id) {
