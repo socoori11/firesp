@@ -1,1 +1,37 @@
-.root { padding: 2rem; }
+// 수정: 찜 목록 페이지의 전체 레이아웃입니다.
+.wishlistPage {
+  max-width: 1200px;
+  min-height: 550px;
+  margin: 0 auto;
+  padding: 70px 24px 100px;
+}
+
+.titleArea {
+  margin-bottom: 40px;
+  text-align: center;
+
+  p {
+    margin: 0 0 8px;
+    color: #ff5a36;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+  }
+
+  h2 {
+    margin: 0 0 10px;
+    color: #222;
+    font-size: 36px;
+  }
+
+  span {
+    color: #888;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 500px) {
+  .wishlistPage {
+    padding: 50px 16px 70px;
+  }
+}

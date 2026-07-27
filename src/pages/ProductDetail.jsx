@@ -22,6 +22,30 @@ const ProductDetail = () => {
       const selectedProduct = productData.find((item) => String(item.id) === id)
 
       setProduct(selectedProduct || null)
+
+      // [찜 기능 추가 1]
+      // 상세 페이지를 열었을 때 하트 모양을 올바르게 표시하려면
+      // 현재 상품이 localStorage의 찜 목록에 있는지 먼저 확인해야 합니다.
+      if (selectedProduct) {
+        // localStorage에서 기존 찜 상품 배열을 가져옵니다.
+        const wishlistItems = loadLocal('wishlist', [])
+
+        // some() 대신 기본 반복문으로 찜 상품을 하나씩 확인합니다.
+        let savedProduct = false
+
+        for (let index = 0; index < wishlistItems.length; index += 1) {
+          const wishlistProduct = wishlistItems[index]
+
+          if (wishlistProduct.id === selectedProduct.id) {
+            savedProduct = true
+            break
+          }
+        }
+
+        // true이면 '♥ 찜 완료', false이면 '♡ 찜하기'가 표시됩니다.
+        setIsLiked(savedProduct)
+      }
+
       setIsLoading(false)
     }
 
@@ -73,6 +97,26 @@ const ProductDetail = () => {
     window.alert(`${product.name} ${quantity}개를 장바구니에 담았습니다.`)
   }
 
+  // [찜 기능 추가 2]
+  // 찜 버튼을 눌렀을 때 상품을 추가하거나 삭제하는 함수입니다.
+  // 나중에 Zustand를 연결하면 이 localStorage 코드를 스토어 함수로 교체합니다.
+  const changeWishlist = () => {
+    // 현재 저장된 찜 상품을 가져옵니다.
+    const wishlistItems = loadLocal('wishlist', [])
+
+    if (isLiked) {
+      // 이미 찜한 상품이면 현재 상품만 제외한 새 배열을 저장합니다.
+      const remainingItems = wishlistItems.filter((item) => item.id !== product.id)
+      saveLocal('wishlist', remainingItems)
+    } else {
+      // 아직 찜하지 않은 상품이면 기존 배열 뒤에 현재 상품을 추가합니다.
+      saveLocal('wishlist', [...wishlistItems, product])
+    }
+
+    // 버튼의 하트 모양을 즉시 반대로 변경합니다.
+    setIsLiked(!isLiked)
+  }
+
   return (
     <section className={styles.detailPage}>
       <Link to="/products" className={styles.backLink}>← 상품 목록</Link>
@@ -118,7 +162,8 @@ const ProductDetail = () => {
           </div>
 
           <div className={styles.buttonArea}>
-            <button type="button" className={styles.likeButton} onClick={() => setIsLiked(!isLiked)}>
+            {/* [찜 기능 추가 3] 클릭하면 changeWishlist 함수가 실행됩니다. */}
+            <button type="button" className={styles.likeButton} onClick={changeWishlist}>
               {isLiked ? '♥ 찜 완료' : '♡ 찜하기'}
             </button>
             <button type="button" className={styles.cartButton} onClick={addToCart}>장바구니 담기</button>
